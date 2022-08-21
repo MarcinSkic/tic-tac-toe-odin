@@ -23,18 +23,39 @@ const playerFactory = function(doc,username,symbol){
     }
 
     const endAction = function(){
-        doc.querySelectorAll('.field').forEach(field => field.removeEventListener('click',tryMakingMove));
+        if(doc){
+            doc.querySelectorAll('.field').forEach(field => field.removeEventListener('click',tryMakingMove));
+        }
     }
 
     const getUsername = function(){
         return username;
     }
 
-    return {giveAction,getUsername};
+    return {giveAction,getUsername,makeMove};
 }
 
-const AIFactory = function(symbol){
+const AIFactory = function(doc,symbol){
 
+    const {makeMove} = playerFactory(null,null,symbol);
+
+    const giveAction = function(){
+        tryMakingMove();
+    }
+
+    const tryMakingMove = function(){
+        do {
+            position = Math.floor(Math.random()*9);
+        } while(gameBoard.isFieldMarked(position));
+
+        makeMove(doc.querySelector(`.field[data-pos="${position}"]`));
+    }
+
+    const getUsername = function(){
+        return null;
+    }
+
+    return {giveAction, getUsername};
 }
 
 const gameController = (function(doc){
@@ -52,14 +73,12 @@ const gameController = (function(doc){
     const setupGame = function(event){
         console.log(event.target.returnValue);
 
-        
-
         players.push(playerFactory(doc,event.target.querySelector('[name="player-0"]').value,Symbols.Cross));
 
         if(event.target.returnValue === 'player'){
             players.push(playerFactory(doc,event.target.querySelector('[name="player-1"]').value,Symbols.Circle));
         } else {
-            //push AI
+            players.push(AIFactory(doc,Symbols.Circle));
         }
 
         nextPlayerTurn();
@@ -67,7 +86,9 @@ const gameController = (function(doc){
 
     const prepareNextTurn = function(didWin){
         if(didWin){
-            console.log(`Player ${players[currentPlayer].getUsername()} won!`);
+            winnerUsername = players[currentPlayer].getUsername();
+            winnerUsername = winnerUsername === null ? 'AI' : `Player "${winnerUsername}"`;
+            console.log(`${winnerUsername} won!`);
             return;
         } else if(currentTurn === 9){
             console.log("End of game");
@@ -100,22 +121,25 @@ const gameBoard = (function(){
     board = Array.from(Array(3),() => new Array(3));
     
     const isFieldMarked = function(stringPosition){
-        const row = parseInt(stringPosition.charAt(0));
-        const column = parseInt(stringPosition.charAt(1));
+        //const row = parseInt(stringPosition.charAt(0));
+        //const column = parseInt(stringPosition.charAt(1));
+
+        const row = Math.floor(parseInt(stringPosition) / 3);
+        const column = parseInt(stringPosition) % 3;
 
         return board[row][column] !== undefined
     }
 
     const markField = function(stringPosition, symbol){
-        const row = parseInt(stringPosition.charAt(0));
-        const column = parseInt(stringPosition.charAt(1));
+        const row = Math.floor(parseInt(stringPosition) / 3);
+        const column = parseInt(stringPosition) % 3;
 
         board[row][column] = symbol;
     }
 
     const didWin = function(stringPosition, symbol){
-        const row = parseInt(stringPosition.charAt(0));
-        const column = parseInt(stringPosition.charAt(1));
+        const row = Math.floor(parseInt(stringPosition) / 3);
+        const column = parseInt(stringPosition) % 3;
 
         function checkColumn(){
             for(let i = 0; i < 3; i++){
@@ -202,12 +226,18 @@ const displayController = (function(doc){
     }
 
     const generateBoard = function () {
-        for(let i = 0; i < 3; i++){
+        /*for(let i = 0; i < 3; i++){
             for(let x = 0; x < 3; x++){
                 field = stringToNode(FIELD_NODE);
                 field.dataset.pos = `${i}${x}`;
                 boardElement.append(field);
             }
+        }*/
+
+        for (let i = 0; i < 9; i++){
+            field = stringToNode(FIELD_NODE);
+            field.dataset.pos = `${i}`;
+            boardElement.append(field);
         }
     }
 
