@@ -96,49 +96,53 @@ const gameBoard = (function(){
         const row = parseInt(stringPosition.charAt(0));
         const column = parseInt(stringPosition.charAt(1));
 
-        if((row === 1 && column === 1) || (row !== 1 && column !== 1)){
-            if(checkDiagonals(symbol)){
-                return true;
+        function checkColumn(){
+            for(let i = 0; i < 3; i++){
+                if(board[row][i] !== symbol){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function checkRow(){
+            for (let i = 0; i < 3;i++){
+                if(board[i][column] !== symbol){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function checkDiagonals(){
+            if((row === 1 && column === 1) || (row !== 1 && column !== 1)){
+                function checkTopLeftToBottomRight(){
+                    for(let i = 0; i < 3; i++){
+                        if(board[i][i] !== symbol){
+                            return false;
+                        }
+                    }
+        
+                    return true;
+                }
+        
+                function checkTopRightToBottomLeft(){
+                    for(let i = 0; i < 3; i++){
+                        if(board[i][2-i] !== symbol){
+                            return false
+                        }
+                    }
+        
+                    return true;
+                }
+
+                return checkTopLeftToBottomRight() || checkTopRightToBottomLeft();
             }
         }
 
-        for(let i = 0; i < 3; i++){
-            if(board[row][i] !== symbol){
-                break;
-            } else if(i === 2){
-                return true;
-            }
-        }
-
-        for (let i = 0; i < 3;i++){
-            if(board[i][column] !== symbol){
-                break;
-            } else if (i == 2){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    const checkDiagonals = function(symbol){
-        for(let i = 0; i < 3; i++){
-            if(board[i][i] !== symbol){
-                break;
-            } else if (i == 2){
-                return true;
-            }
-        }
-
-        for(let i = 0; i < 3; i++){
-            if(board[i][2-i] !== symbol){
-                break;
-            } else if (i == 2){
-                return true;
-            }
-        }
-
-        return false;
+        return checkColumn() || checkRow() || checkDiagonals();
     }
 
     return {isFieldMarked, markField, didWin};
