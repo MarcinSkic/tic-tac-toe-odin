@@ -1,4 +1,4 @@
-const Symbols = {
+const Symbols = {   //"ENUM"
     Cross: Symbol('cross'),
     Circle: Symbol('circle')
 }
@@ -26,26 +26,48 @@ const playerFactory = function(doc,username,symbol){
         doc.querySelectorAll('.field').forEach(field => field.removeEventListener('click',tryMakingMove));
     }
 
-    return {giveAction};
+    const getUsername = function(){
+        return username;
+    }
+
+    return {giveAction,getUsername};
+}
+
+const AIFactory = function(symbol){
+
 }
 
 const gameController = (function(doc){
 
     let currentTurn = 0;
-    let currentPlayer = 1;
+    let currentPlayer = 1;  //Starting value for invoking nextPlayerTurn, where it will switch to 0
     const players = [];
 
     const initializeGame = function(){
         displayController.generateBoard();
-        createPlayers();
+        displayController.showGameTypeDialog();
         assignListeners();
+    }
+
+    const setupGame = function(event){
+        console.log(event.target.returnValue);
+
+        
+
+        players.push(playerFactory(doc,event.target.querySelector('[name="player-0"]').value,Symbols.Cross));
+
+        if(event.target.returnValue === 'player'){
+            players.push(playerFactory(doc,event.target.querySelector('[name="player-1"]').value,Symbols.Circle));
+        } else {
+            //push AI
+        }
 
         nextPlayerTurn();
     }
 
     const prepareNextTurn = function(didWin){
         if(didWin){
-            console.log("WON");
+            console.log(`Player ${players[currentPlayer].getUsername()} won!`);
             return;
         } else if(currentTurn === 9){
             console.log("End of game");
@@ -58,17 +80,16 @@ const gameController = (function(doc){
     const nextPlayerTurn = function(){
         currentTurn++;
 
-        currentPlayer = currentPlayer === 1 ? 0 : 1;
+        currentPlayer = getNextPlayerIndex(currentPlayer);
         players[currentPlayer].giveAction();
     }
 
-    const createPlayers = function(){
-        players.push(playerFactory(doc,"Player1",Symbols.Cross));
-        players.push(playerFactory(doc,"Player2",Symbols.Circle));
+    const getNextPlayerIndex = function(index){
+        return index === 1 ? 0 : 1;
     }
 
     const assignListeners = function(){
-        
+        doc.querySelector('.choose-names').addEventListener('close',setupGame);
     }
 
     return {initializeGame, prepareNextTurn};
@@ -159,12 +180,25 @@ const displayController = (function(doc){
                         '</div>'
 
     const boardElement = doc.querySelector('#board');
+    const pickGameTypeDialog = doc.querySelector('.pick-game-type');
+    const namePlayersDialog = doc.querySelector('.choose-names');
 
-    const stringToNode = function(string){
-        template = doc.createElement('template');
-        string = string.trim();
-        template.innerHTML = string;
-        return template.content.firstChild;
+    const showGameTypeDialog = function (){
+        pickGameTypeDialog.showModal();
+        pickGameTypeDialog.addEventListener('close',showPlayerNamingDialog);
+    }
+
+    const showPlayerNamingDialog = function(event){
+        const gameType = event.target.returnValue;
+
+        namePlayersDialog.showModal();
+        namePlayersDialog.querySelector('button').setAttribute('value',gameType);
+
+        if(gameType === 'ai') {
+            AIInput = namePlayersDialog.querySelector('input[type="text"]:last-of-type');
+            AIInput.disabled = true;
+            AIInput.value = "AI";
+        }
     }
 
     const generateBoard = function () {
@@ -179,7 +213,13 @@ const displayController = (function(doc){
 
     const drawSymbol = function(clickedNode, symbol){
         clickedNode.querySelector("path").setAttribute('d',symbolToPath(symbol));
-        
+    }
+
+    const stringToNode = function(string){
+        template = doc.createElement('template');
+        string = string.trim();
+        template.innerHTML = string;
+        return template.content.firstChild;
     }
 
     const symbolToPath = function(symbol){
@@ -191,7 +231,7 @@ const displayController = (function(doc){
     }
 
 
-    return {generateBoard,drawSymbol};
+    return {showGameTypeDialog,generateBoard,drawSymbol};
     
 })(document);
 

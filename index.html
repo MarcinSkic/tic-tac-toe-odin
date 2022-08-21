@@ -14,6 +14,23 @@
         <h1>Tic Tac Toe</h1>
     </header>
     <main>
+        <dialog class="pick-game-type">
+            <form method="dialog">
+                <button type="submit" value="player">
+                    VS Player
+                </button>
+                <button type="submit" value="ai">
+                    VS AI
+                </button>
+            </form>
+        </dialog>
+        <dialog class="choose-names">
+            <form method="dialog">
+                <input type="text" name="player-0" required>
+                <input type="text" name="player-1" required>
+                <button type="submit">Start Game</button>
+            </form>
+        </dialog>
         <section id="game">
             <div id="board">
                 
