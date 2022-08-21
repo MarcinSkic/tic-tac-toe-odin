@@ -16,9 +16,14 @@ const playerFactory = function(doc,username,symbol){
     }
 
     const makeMove = function(clickedNode){
-        console.log("Made move");
         gameBoard.markField(clickedNode.dataset.pos,symbol);
         displayController.drawSymbol(clickedNode,symbol);
+        endAction();
+        gameController.nextPlayerTurn();
+    }
+
+    const endAction = function(){
+        doc.querySelectorAll('.field').forEach(field => field.removeEventListener('click',tryMakingMove));
     }
 
     return {giveAction};
@@ -26,6 +31,7 @@ const playerFactory = function(doc,username,symbol){
 
 const gameController = (function(doc){
 
+    let currentPlayer = 0;
     const players = [];
 
     const initializeGame = function(){
@@ -33,7 +39,12 @@ const gameController = (function(doc){
         createPlayers();
         assignListeners();
 
-        players[0].giveAction();
+        players[currentPlayer].giveAction();
+    }
+
+    const nextPlayerTurn = function(){
+        currentPlayer = currentPlayer === 1 ? 0 : 1;
+        players[currentPlayer].giveAction();
     }
 
     const createPlayers = function(){
@@ -45,7 +56,7 @@ const gameController = (function(doc){
         
     }
 
-    return {initializeGame};
+    return {initializeGame, nextPlayerTurn};
 
 })(document);
 
@@ -53,17 +64,17 @@ const gameBoard = (function(){
     board = Array.from(Array(3),() => new Array(3));
     
     const isFieldMarked = function(stringPosition){
-        console.log(board);
-        if(board[parseInt(stringPosition.charAt(0))][parseInt(stringPosition.charAt(1))] !== undefined){
-            return true;
-        } else {
-            return false;
-        }
-        
+        const row = parseInt(stringPosition.charAt(0));
+        const column = parseInt(stringPosition.charAt(1));
+
+        return board[row][column] !== undefined
     }
 
     const markField = function(stringPosition, symbol){
-        board[parseInt(stringPosition.charAt(0))][parseInt(stringPosition.charAt(1))] = symbol;
+        const row = parseInt(stringPosition.charAt(0));
+        const column = parseInt(stringPosition.charAt(1));
+
+        board[row][column] = symbol;
     }
 
     return {isFieldMarked, markField};
