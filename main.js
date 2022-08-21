@@ -16,10 +16,10 @@ const playerFactory = function(doc,username,symbol){
     }
 
     const makeMove = function(clickedNode){
-        gameBoard.markField(clickedNode.dataset.pos,symbol);
         displayController.drawSymbol(clickedNode,symbol);
+        gameBoard.markField(clickedNode.dataset.pos,symbol);
         endAction();
-        gameController.nextPlayerTurn();
+        gameController.prepareNextTurn(gameBoard.didWin(clickedNode.dataset.pos,symbol));
     }
 
     const endAction = function(){
@@ -31,7 +31,8 @@ const playerFactory = function(doc,username,symbol){
 
 const gameController = (function(doc){
 
-    let currentPlayer = 0;
+    let currentTurn = 0;
+    let currentPlayer = 1;
     const players = [];
 
     const initializeGame = function(){
@@ -39,10 +40,24 @@ const gameController = (function(doc){
         createPlayers();
         assignListeners();
 
-        players[currentPlayer].giveAction();
+        nextPlayerTurn();
+    }
+
+    const prepareNextTurn = function(didWin){
+        if(didWin){
+            console.log("WON");
+            return;
+        } else if(currentTurn === 9){
+            console.log("End of game");
+            return;
+        }
+
+        nextPlayerTurn();
     }
 
     const nextPlayerTurn = function(){
+        currentTurn++;
+
         currentPlayer = currentPlayer === 1 ? 0 : 1;
         players[currentPlayer].giveAction();
     }
@@ -56,7 +71,7 @@ const gameController = (function(doc){
         
     }
 
-    return {initializeGame, nextPlayerTurn};
+    return {initializeGame, prepareNextTurn};
 
 })(document);
 
@@ -77,7 +92,56 @@ const gameBoard = (function(){
         board[row][column] = symbol;
     }
 
-    return {isFieldMarked, markField};
+    const didWin = function(stringPosition, symbol){
+        const row = parseInt(stringPosition.charAt(0));
+        const column = parseInt(stringPosition.charAt(1));
+
+        if((row === 1 && column === 1) || (row !== 1 && column !== 1)){
+            if(checkDiagonals(symbol)){
+                return true;
+            }
+        }
+
+        for(let i = 0; i < 3; i++){
+            if(board[row][i] !== symbol){
+                break;
+            } else if(i === 2){
+                return true;
+            }
+        }
+
+        for (let i = 0; i < 3;i++){
+            if(board[i][column] !== symbol){
+                break;
+            } else if (i == 2){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    const checkDiagonals = function(symbol){
+        for(let i = 0; i < 3; i++){
+            if(board[i][i] !== symbol){
+                break;
+            } else if (i == 2){
+                return true;
+            }
+        }
+
+        for(let i = 0; i < 3; i++){
+            if(board[i][2-i] !== symbol){
+                break;
+            } else if (i == 2){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    return {isFieldMarked, markField, didWin};
 })();
 
 const displayController = (function(doc){
