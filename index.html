@@ -14,7 +14,7 @@
         <h1>Tic Tac Toe</h1>
     </header>
     <main>
-        <dialog class="pick-game-type" autofocus>
+        <dialog class="pick-game-type">
             <form method="dialog">
                 <button type="submit" value="player">
                     VS Player
@@ -27,19 +27,36 @@
         <dialog class="choose-names">
             <form method="dialog">
                 <label for="player-0">First player</label>
-                <input id="player-0" type="text" name="player-0" required>  <!--Dodać w tle inputów krzyżyki i kółeczka xD-->
+                <input id="player-0" type="text" name="player-0" maxlength="30" required>  <!--Dodać w tle inputów krzyżyki i kółeczka xD-->
                 <label for="player-0">Second player</label>
-                <input id="player-1" type="text" name="player-1" required>
+                <input id="player-1" type="text" name="player-1" maxlength="30" required>
                 <button type="submit">Start Game</button>
             </form>
+        </dialog>
+        <dialog class="game-end">
+            <div class="dialog-helper">
+                <div class="message"></div>
+                <button>Restart</button>
+            </div>
         </dialog>
         <section id="game">
             <div id="board">
                 
             </div>
             <div id="interface">
-                <div class="player-turn">Player 1</div>
-                <button>Restart</button>
+                <div class="player-0 active">
+                    <div class="name">Player 1</div>
+                    <svg style="width:36px;height:36px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </div>
+                
+                <div class="player-1">
+                    <div class="name">Player 2frg</div>
+                    <svg style="width:36px;height:36px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </svg>
+                </div>
             </div>
         </section>
         <section id="leaderboard">

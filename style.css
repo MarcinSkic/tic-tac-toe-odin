@@ -1,3 +1,15 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #board {
     background-color: rgb(63, 63, 63);
     height: min(90vw,500px);
@@ -8,12 +20,6 @@
     gap: 5px;
 
     border: 2px solid rgb(63, 63, 63);
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .field {
@@ -33,6 +39,38 @@ body {
     background-color: hsl(208, 100%, 80%);
 }
 
+#interface {
+
+    /*display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-auto-rows: 80px;
+    align-items: stretch;*/
+
+    display: flex;
+    gap: 20px;
+
+    font-size: 1.2rem;
+}
+
+[class*="player"] {
+    margin-top: 20px;
+    padding: 10px;
+
+    font-size: 1.5rem;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+
+    background-color: aliceblue;
+}
+
+[class*="player"].active {
+    background-color: hsl(208, 100%, 80%);
+    box-shadow: 0px 0px 10px 0.1px hsla(207, 100%, 29%, 0.616);
+}
+
 dialog {
     color: aliceblue;
     background-color: rgba(0, 0, 0, 0.705);
@@ -50,15 +88,6 @@ dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.445);
 }
 
-.pick-game-type form{
-    height: 100%;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    place-items: stretch;
-    place-content: stretch;
-}
-
 dialog button {
     color: aliceblue;
 
@@ -68,6 +97,15 @@ dialog button {
 
 dialog button:hover {
     background-color: rgba(0, 0, 0, 0.918);
+}
+
+.pick-game-type form{
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: stretch;
+    place-content: stretch;
 }
 
 .pick-game-type button:focus-visible {
@@ -102,6 +140,7 @@ dialog button:hover {
     border: none;
 }
 
+.game-end button,
 .choose-names button {
     font-size: 2rem;
     font-weight: 700;
@@ -110,4 +149,16 @@ dialog button:hover {
     width: 100%;
 
     align-self: flex-end;
+}
+
+.game-end .dialog-helper {
+    height: 100%;
+    
+    font-size: 1.7rem;
+
+    display: grid;
+    grid-template-rows: 60% 1fr;
+
+    justify-items: center;
+    align-items: center;
 }

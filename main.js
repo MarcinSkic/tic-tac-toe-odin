@@ -118,7 +118,7 @@ const gameController = (function(doc){
 })(document);
 
 const gameBoard = (function(){
-    board = Array.from(Array(3),() => new Array(3));
+    let board = Array.from(Array(3),() => new Array(3));
     
     const isFieldMarked = function(stringPosition){
         //const row = parseInt(stringPosition.charAt(0));
@@ -206,6 +206,7 @@ const displayController = (function(doc){
     const boardElement = doc.querySelector('#board');
     const pickGameTypeDialog = doc.querySelector('.pick-game-type');
     const namePlayersDialog = doc.querySelector('.choose-names');
+    const endGameMessageDialog = doc.querySelector('.game-end');
 
     const showGameTypeDialog = function (){
         pickGameTypeDialog.showModal();
@@ -223,6 +224,11 @@ const displayController = (function(doc){
             AIInput.disabled = true;
             AIInput.value = "AI";
         }
+    }
+
+    const showGameEndDialog = function(message){
+        endGameMessageDialog.querySelector('.message').textContent = message;
+        endGameMessageDialog.showModal();
     }
 
     const generateBoard = function () {
@@ -261,7 +267,7 @@ const displayController = (function(doc){
     }
 
 
-    return {showGameTypeDialog,generateBoard,drawSymbol};
+    return {showGameTypeDialog,showGameEndDialog,generateBoard,drawSymbol};
     
 })(document);
 
