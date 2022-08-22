@@ -32,3 +32,82 @@ body {
 .field.filled {
     background-color: hsl(208, 100%, 80%);
 }
+
+dialog {
+    color: aliceblue;
+    background-color: rgba(0, 0, 0, 0.705);
+
+    padding: 0;
+
+    height: clamp(250px,50vw,500px);
+    width: min(80vw,800px);
+
+    border-radius: 10px;
+    border: none;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.445);
+}
+
+.pick-game-type form{
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: stretch;
+    place-content: stretch;
+}
+
+dialog button {
+    color: aliceblue;
+
+    border: none;
+    background-color: transparent;
+}
+
+dialog button:hover {
+    background-color: rgba(0, 0, 0, 0.918);
+}
+
+.pick-game-type button:focus-visible {
+    outline: none;
+}
+
+.choose-names form {
+    height: 100%;
+
+    font-size: 1.4rem;
+
+    display: grid;
+    grid-template-rows: repeat(4,15%) 1fr;
+    
+    justify-items: center;
+    align-items: flex-end;
+}
+
+.choose-names form * {
+    width: 90%;
+    padding: 5px;
+}
+
+.choose-names input {
+    align-self: stretch;
+
+    font-size: 1.7rem;
+
+    color: white;
+    background-color: rgb(26, 26, 26);
+
+    border: none;
+}
+
+.choose-names button {
+    font-size: 2rem;
+    font-weight: 700;
+
+    height: 80%;
+    width: 100%;
+
+    align-self: flex-end;
+}
