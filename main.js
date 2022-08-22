@@ -73,12 +73,16 @@ const gameController = (function(doc){
     const setupGame = function(event){
         console.log(event.target.returnValue);
 
-        players.push(playerFactory(doc,event.target.querySelector('[name="player-0"]').value,Symbols.Cross));
+        const firstPlayerUsername = event.target.querySelector('[name="player-0"]').value;
+        players.push(playerFactory(doc,firstPlayerUsername,Symbols.Cross));
 
         if(event.target.returnValue === 'player'){
-            players.push(playerFactory(doc,event.target.querySelector('[name="player-1"]').value,Symbols.Circle));
+            const secondPlayerUsername = event.target.querySelector('[name="player-1"]').value;
+            players.push(playerFactory(doc,secondPlayerUsername,Symbols.Circle));
+            displayController.setupPlayersUI(`"${firstPlayerUsername}"`,`"${secondPlayerUsername}"`);
         } else {
             players.push(AIFactory(doc,Symbols.Circle));
+            displayController.setupPlayersUI(`"${firstPlayerUsername}"`,'AI');
         }
 
         nextPlayerTurn();
@@ -103,6 +107,7 @@ const gameController = (function(doc){
 
         currentPlayer = getNextPlayerIndex(currentPlayer);
         players[currentPlayer].giveAction();
+        displayController.changeActivePlayer();
     }
 
     const getNextPlayerIndex = function(index){
@@ -208,6 +213,9 @@ const displayController = (function(doc){
     const namePlayersDialog = doc.querySelector('.choose-names');
     const endGameMessageDialog = doc.querySelector('.game-end');
 
+    const firstPlayer = doc.querySelector('.player-0');
+    const secondPlayer = doc.querySelector('.player-1');
+
     const showGameTypeDialog = function (){
         pickGameTypeDialog.showModal();
         pickGameTypeDialog.addEventListener('close',showPlayerNamingDialog);
@@ -232,19 +240,22 @@ const displayController = (function(doc){
     }
 
     const generateBoard = function () {
-        /*for(let i = 0; i < 3; i++){
-            for(let x = 0; x < 3; x++){
-                field = stringToNode(FIELD_NODE);
-                field.dataset.pos = `${i}${x}`;
-                boardElement.append(field);
-            }
-        }*/
 
         for (let i = 0; i < 9; i++){
             field = stringToNode(FIELD_NODE);
             field.dataset.pos = `${i}`;
             boardElement.append(field);
         }
+    }
+
+    const setupPlayersUI = function(firstName, secondName){
+        firstPlayer.firstChild.textContent = firstName;
+        secondPlayer.firstChild.textContent = secondName;
+    }
+
+    const changeActivePlayer = function(){
+        firstPlayer.classList.toggle('active');
+        secondPlayer.classList.toggle('active');
     }
 
     const drawSymbol = function(clickedNode, symbol){
@@ -266,8 +277,7 @@ const displayController = (function(doc){
         }
     }
 
-
-    return {showGameTypeDialog,showGameEndDialog,generateBoard,drawSymbol};
+    return {showGameTypeDialog,showGameEndDialog,generateBoard,setupPlayersUI,changeActivePlayer,drawSymbol};
     
 })(document);
 
